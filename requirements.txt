@@ -1,0 +1,15 @@
+fastmcp
+newsdataapi
+dotenv
+langchain
+langchain-core
+langchain-community
+pypdf
+langchain-ollama
+arxiv
+PyGitHub
+langchain-qdrant
+qdrant-client
+
+
+
