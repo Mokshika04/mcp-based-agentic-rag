@@ -1,27 +1,40 @@
-from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader
+import os
+from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_ollama import OllamaEmbeddings
 from langchain_qdrant import QdrantVectorStore
+from langchain_ollama import OllamaEmbeddings
 
-def get_rag_chain():
-    # Loading the PDFs 
-    loader = DirectoryLoader("/Users/mokshikapandey/Documents/Projects/mcp_based_agentic_rag/MCP pdf data", glob="*.pdf", loader_cls=PyPDFLoader)
-    docs = loader.load()
-    print(docs)
+def embed_data():
+    pdf_directory = "/Users/mokshikapandey/Documents/Projects/mcp_based_agentic_rag/MCP pdf data" 
+    all_docs = []
+    print(os.listdir(pdf_directory))
 
-    # Splitting the text into chunks
-    #text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
-    #splits = text_splitter.split_documents(docs)
+    # Loading the PDFs
+    for file in os.listdir(pdf_directory):
+        if file.endswith(".pdf"):
+            loader = PyPDFLoader(os.path.join(pdf_directory, file))
+            docs = loader.load()
+            all_docs.extend(docs)
+
+    print(f"Loaded {len(all_docs)} pages")
+
+    # Spliting the text into chunks
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+    splits = text_splitter.split_documents(all_docs)
 
     # Initializing the embeddings
-    #embeddings = OllamaEmbeddings(model="llama3.2:latest")
+    embeddings = OllamaEmbeddings(model="embeddinggemma")
 
-    # Creating the Local Vector Store
-    #vector_store = QdrantVectorStore.from_documents(
-       # documents=splits, 
-        #embedding=embeddings,
-        #path="./qdrant_data",
-        #collection_name="my_documents",
-    #)
+    # Storing in a local vector store
+    vector_store = QdrantVectorStore.from_documents(
+        documents=splits,
+        embedding=embeddings,
+        path="./qdrant_data", 
+        collection_name="my_documents",
+    )
 
-    #return vector_store
+    print(f"Successfully indexed {len(all_docs)} pages into {len(splits)} chunks.")
+    return vector_store
+
+embed_data()
+

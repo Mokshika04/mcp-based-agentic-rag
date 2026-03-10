@@ -12,3 +12,12 @@ wheels/
 # Environment variables / secrets
 .env
 .env.*
+
+# --- OS specific ---
+# This ignores the hidden Mac folder you see in your path
+.DS_Store
+
+# --- Vector Database ---
+# This is the folder created by QdrantStore
+qdrant_data/
+

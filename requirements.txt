@@ -9,7 +9,6 @@ langchain-ollama
 arxiv
 PyGitHub
 langchain-qdrant
-qdrant-client
 
 
 
