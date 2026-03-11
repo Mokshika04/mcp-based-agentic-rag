@@ -15,4 +15,3 @@ def local_rag_search(query: str):
     results = vector_store.similarity_search(query, k=3)
 
     return "\n".join([doc.page_content for doc in results])
-
