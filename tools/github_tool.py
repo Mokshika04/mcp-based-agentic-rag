@@ -20,9 +20,9 @@ def search_repo_by_topic(topic:str, limit=5):
     # Repositories created in the last week, sorted by stars
     last_week = datetime.now() - timedelta(days=7)
     date_query = last_week.strftime("%Y-%m-%d")
-    query = f"created:>{date_query} topic:{topic}"
+    github_query = f"created:>{date_query} topic:{topic}"
 
-    repos = github_client.search_repositories(query=query, sort="stars", order="desc")
+    repos = github_client.search_repositories(query=github_query, sort="stars", order="desc")
 
     results=[]
     for repo in repos[:limit]:
