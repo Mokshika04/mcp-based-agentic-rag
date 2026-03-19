@@ -1,9 +1,24 @@
 import arxiv
-
+from langchain.tools import tool
+@tool
 def search_papers(query: str):
     """
-    Search for papers on arXiv based on a query string. 
-    Takes a query string as input and returns a list of relevant papers with their titles, authors, summaries, links, and publication dates.
+    Search for research papers on arXiv based on a specific query.
+
+    Connects to the arXiv API to retrieve a collection of scientific papers 
+    matching the input criteria. This is useful for gathering metadata 
+    for literature reviews or agentic RAG workflows.
+
+    Args:
+        query (str): The search term or keywords to look for (e.g., "machine learning").
+
+    Returns:
+        list[dict]: A list of dictionaries, where each dictionary contains:
+            - 'title' (str): The full title of the paper.
+            - 'authors' (list): Names of the contributing researchers.
+            - 'summary' (str): A brief abstract of the work.
+            - 'link' (str): The direct URL to the paper on arXiv.
+            - 'published' (str): The original publication date.
     """
     search_query = f'{query} AND (cat:cs.* OR cat:eess.*)'
 
@@ -32,5 +47,4 @@ def search_papers(query: str):
             "published": result.published
         })
 
-    return papers
-
+    return papers 

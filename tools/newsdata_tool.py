@@ -1,15 +1,23 @@
 import os
 from dotenv import load_dotenv
 from newsdataapi import NewsDataApiClient
+from langchain.tools import tool
 
 # Load the environment variables from the .env file
 load_dotenv()
-
-def fetch_latest_news(query:str, limit=5):
+@tool
+def fetch_latest_news(query:str, limit:int=3):
     """
     Fetch the latest news articles based on a query string.
-    Takes a query string as input and returns a list of relevant news articles with their titles, links, descriptions, and sources.
+    
+    Args:
+        query (str): The search term.
+        limit (int): Number of results to return. Defaults to 3.
+    
+    Returns:
+        list: A list of relevant news articles.
     """
+
     # Get the NewsData API key from environment variables
     newsdata_api_key = os.getenv("NEWSDATA.IO_API_KEY")
 
@@ -26,7 +34,6 @@ def fetch_latest_news(query:str, limit=5):
             "description": article.get("description"),
             "source": article.get("source")
         })
-
     return results
 
 
