@@ -3,11 +3,11 @@ from dotenv import load_dotenv
 from github import Github, Auth
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict, Any
-from langchain.tools import tool
+
 
 # Load the environment variables from the .env file
 load_dotenv()
-@tool
+
 def search_repo_by_topic(topic:str, limit: Optional[int]=None)-> List[Dict[str, Any]]:
     """
     Search for GitHub repositories based on a specific topic.
@@ -43,13 +43,16 @@ def search_repo_by_topic(topic:str, limit: Optional[int]=None)-> List[Dict[str, 
     github_client = Github(auth=auth, timeout=10)
 
     # Repositories created in the last 15 days, sorted by stars
+    clean_query = topic.strip().replace(" ", "-").lower() 
     last_week = (datetime.now() - timedelta(days=15)).strftime("%Y-%m-%d")
-    github_query = f"created:>{last_week} topic:{topic} stars:>5"
+    github_query = f"created:>{last_week} topic:{clean_query} stars:>5"
 
     repos = github_client.search_repositories(query=github_query, sort="stars", order="desc")
 
     results=[]
-    for repo in repos[:result_limit]:
+    for repo in repos:
+        if len(results) >= result_limit:
+            break
         results.append({
             "name": repo.full_name,
             "stars": repo.stargazers_count,
@@ -60,5 +63,5 @@ def search_repo_by_topic(topic:str, limit: Optional[int]=None)-> List[Dict[str, 
     # Handling the Empty case 
     if not results:
         return [{"result": f"No trending repositories found for '{topic}' in the last 15 days."}]
-
+    
     return results 

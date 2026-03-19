@@ -1,11 +1,11 @@
 import os
 from dotenv import load_dotenv
 from newsdataapi import NewsDataApiClient
-from langchain.tools import tool
+
 
 # Load the environment variables from the .env file
 load_dotenv()
-@tool
+
 def fetch_latest_news(query:str, limit:int=3):
     """
     Fetch the latest news articles based on a query string.
@@ -34,6 +34,7 @@ def fetch_latest_news(query:str, limit:int=3):
             "description": article.get("description"),
             "source": article.get("source")
         })
+
     return results
 
 
