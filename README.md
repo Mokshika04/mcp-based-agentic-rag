@@ -31,14 +31,14 @@ Primary modules:
 
 - Python 3.10+
 - Ollama installed and model `llama3.2:latest` available.
-- virtualenv (optional but recommended)
+- virtualenv/uv (optional but recommended)
 
 ## Installation
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+uv install -r requirements.txt
 ```
 
 ## Startup
@@ -46,13 +46,13 @@ pip install -r requirements.txt
 1. Run MCP server:
 
 ```bash
-python server.py
+uv run server.py
 ```
 
 2. In another terminal, run client:
 
 ```bash
-python client.py
+uv run client.py
 ```
 
 3. Type queries. Tools are:
@@ -62,7 +62,7 @@ python client.py
 - `news_tool` → latest news search
 - `rag_tool` → local documents search
 
-Type `exit` to quit.
+Type `exit`, `bye`, `quit` to quit.
 
 ## Customization
 
