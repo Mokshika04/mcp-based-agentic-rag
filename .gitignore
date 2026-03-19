@@ -19,3 +19,9 @@ wheels/
 # --- Vector Database ---
 qdrant_data/
 
+# Ignore the PDF folder and all its contents
+pdf/
+data/
+
+# Also ignore any loose PDF files in the project
+*.pdf
