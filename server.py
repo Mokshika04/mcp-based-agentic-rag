@@ -19,4 +19,4 @@ def search_local_documents(query: str) -> str:
     return local_rag_search(query)
 
 if __name__ == "__main__":
-    mcp.run(transport="sse")
+    mcp.run(transport="sse", host="0.0.0.0", port=8000)

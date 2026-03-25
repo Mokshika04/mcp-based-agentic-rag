@@ -1,8 +1,11 @@
+import os
 from langchain_qdrant import QdrantVectorStore
 from langchain_ollama import OllamaEmbeddings
 
+ollama_host = os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434")
+
 # Loading the model
-embeddings = OllamaEmbeddings(model="embeddinggemma")
+embeddings = OllamaEmbeddings(model="embeddinggemma", base_url=ollama_host)
 
 # Loading the existing embeddings 
 vector_store = QdrantVectorStore.from_existing_collection(

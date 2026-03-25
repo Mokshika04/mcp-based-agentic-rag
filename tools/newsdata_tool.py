@@ -19,7 +19,7 @@ def fetch_latest_news(query:str, limit:int=3):
     """
 
     # Get the NewsData API key from environment variables
-    newsdata_api_key = os.getenv("NEWSDATA.IO_API_KEY")
+    newsdata_api_key = os.getenv("NEWSDATA_IO_API_KEY")
 
     # Initialize the NewsData API client
     api = NewsDataApiClient(apikey=newsdata_api_key)
