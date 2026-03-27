@@ -1,10 +1,12 @@
 import asyncio
+import tiktoken
 from fastmcp import Client
 from langchain_classic.agents import AgentExecutor, create_tool_calling_agent
 from langchain.tools import tool
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_ollama import ChatOllama
 from typing import Any
+from langchain_classic.memory import ConversationSummaryBufferMemory 
 
 # MCP Client Connection
 client = Client("http://127.0.0.1:8000/sse")
@@ -37,7 +39,7 @@ async def github_tool(topic:Any)->str:
 
 @tool
 async def news_tool(query:Any)->str:
-    """Search for the latest/trending news in tech."""
+    """Search for the latest/trending news. Input should be a plain search string, e.g. 'AI news' or 'latest tech'."""
     return await call_mcp_tool("fetch_latest_news", query=extract_string(query))
 
 @tool
@@ -51,6 +53,14 @@ tools = [research_tool, github_tool, news_tool, rag_tool]
 llm = ChatOllama(
     model = "llama3.2:latest",
     disable_streaming=False,
+    )
+
+memory = ConversationSummaryBufferMemory(
+    llm=llm,
+    max_token_limit=500,
+    memory_key="chat_history",
+    return_messages=True,
+    tiktoken_encoder_name="cl100k_base"
     )
 
 # ChatPromptTemplate 
@@ -69,8 +79,11 @@ prompt = ChatPromptTemplate.from_messages([
         "2. If external tools (ArXiv, GitHub, Newsdata) return no results, inform the user clearly.\n"
         "3. When citing papers or repos, always include the title and the direct link(URL).\n"
         "4. Be concise but technical. If the user's query is vague, ask for clarification before searching."),
+
+        MessagesPlaceholder(variable_name="chat_history"),
+
         ("human", "{input}"),
-        ("placeholder", "{agent_scratchpad}"),
+        MessagesPlaceholder(variable_name="agent_scratchpad"),
     ])
 
 # Creating the Agent
@@ -81,7 +94,7 @@ agent = create_tool_calling_agent(
     )
 
 # Creating the Executor
-agent_executor = AgentExecutor(agent=agent, tools=tools, verbose= True)
+agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose= True)
 
 async def main():
     while True:
