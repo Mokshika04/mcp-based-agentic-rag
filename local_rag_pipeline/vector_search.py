@@ -1,6 +1,7 @@
 import os
 from langchain_qdrant import QdrantVectorStore
 from langchain_ollama import OllamaEmbeddings
+from langchain.tools import tool
 
 ollama_host = os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434")
 
@@ -14,6 +15,7 @@ vector_store = QdrantVectorStore.from_existing_collection(
     path="./qdrant_data", 
 )
 
+@tool
 def local_rag_search(query: str):
     results = vector_store.similarity_search(query, k=3)
 

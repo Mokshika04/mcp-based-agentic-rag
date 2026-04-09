@@ -1,5 +1,7 @@
 import arxiv
+from langchain.tools import tool
 
+@tool
 def search_papers(query: str):
     """
     Search for research papers on arXiv based on a specific query.

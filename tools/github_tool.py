@@ -3,11 +3,13 @@ from dotenv import load_dotenv
 from github import Github, Auth
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict, Any
+from langchain.tools import tool
 
 
 # Load the environment variables from the .env file
 load_dotenv()
 
+@tool
 def search_repo_by_topic(topic:str, limit: Optional[int]=None)-> List[Dict[str, Any]]:
     """
     Search for GitHub repositories based on a specific topic.

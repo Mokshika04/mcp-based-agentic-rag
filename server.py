@@ -2,6 +2,7 @@ from fastmcp import FastMCP
 from tools.arxiv_tool import search_papers
 from tools.github_tool import search_repo_by_topic
 from tools.newsdata_tool import fetch_latest_news 
+from tools.web_search_tool import websearch
 from local_rag_pipeline. vector_search import local_rag_search
 
 mcp = FastMCP("MCP Server")
@@ -10,7 +11,7 @@ mcp = FastMCP("MCP Server")
 mcp.tool()(search_papers)
 mcp.tool()(search_repo_by_topic)
 mcp.tool()(fetch_latest_news)
-
+mcp.tool()(websearch)
 
 # Tool for searching the local database
 @mcp.tool()

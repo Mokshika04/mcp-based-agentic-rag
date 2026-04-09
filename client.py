@@ -1,5 +1,4 @@
 import asyncio
-import tiktoken
 from fastmcp import Client
 from langchain_classic.agents import AgentExecutor, create_tool_calling_agent
 from langchain.tools import tool
@@ -47,14 +46,18 @@ async def rag_tool(query:Any)->str:
     """Searches the local documents"""
     return await call_mcp_tool("search_local_documents", query=extract_string(query))
 
-tools = [research_tool, github_tool, news_tool, rag_tool]
+@tool
+async def search_tool(query:Any)->str:
+    """Searches the web for a given query"""
+    return await call_mcp_tool("websearch", query=extract_string(query))
+
+tools = [research_tool, github_tool, news_tool, rag_tool, search_tool]
 
 # Initializing the Ollama model
 llm = ChatOllama(
     model = "llama3.2:latest",
     disable_streaming=False,
     )
-
 memory = ConversationSummaryBufferMemory(
     llm=llm,
     max_token_limit=500,
@@ -72,11 +75,12 @@ prompt = ChatPromptTemplate.from_messages([
         "- github_tool: Search Github for trending repositories.\n"
         "- news_tool: Search for the latest/trending news in tech.\n"
         "- rag_tool: Searches the local documents.\n"
+        "- search_tool: Searches the web for a given query.\n"
         "Your goal is to provide accurate, data-driven answers by synthesized information from your tools.\n\n"
         
         "RULES OF ENGAGEMENT:\n"
         "1. ALWAYS check local documents first using rag_tool before searching external sources.\n"
-        "2. If external tools (ArXiv, GitHub, Newsdata) return no results, inform the user clearly.\n"
+        "2. If external tools (ArXiv, GitHub, Newsdata, Websearch) return no results, inform the user clearly.\n"
         "3. When citing papers or repos, always include the title and the direct link(URL).\n"
         "4. Be concise but technical. If the user's query is vague, ask for clarification before searching."),
 
