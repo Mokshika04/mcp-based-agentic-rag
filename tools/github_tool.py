@@ -66,4 +66,5 @@ def search_repo_by_topic(topic:str, limit: Optional[int]=None)-> List[Dict[str, 
     if not results:
         return [{"result": f"No trending repositories found for '{topic}' in the last 15 days."}]
     
+    print("GitHub Tool was called")
     return results 

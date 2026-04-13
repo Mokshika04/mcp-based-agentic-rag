@@ -5,10 +5,8 @@ from tools.web_search_tool import websearch
 from local_rag_pipeline. vector_search import local_rag_search
 from langchain_classic.agents import AgentExecutor, create_tool_calling_agent
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain.tools import tool
 from shared_resources import llm
 
-@tool
 def agent_fetch_tools(query:str, chat_history:list= None):
     """
     A multi-tool orchestrator that selects and executes the most appropriate research or search tool 
@@ -28,31 +26,52 @@ def agent_fetch_tools(query:str, chat_history:list= None):
         str: Returns the string output.
     """
 
-    if chat_history is None:
-        chat_history = []
+    #if chat_history is None:
+       # chat_history = []
 
     tools = [search_papers, search_repo_by_topic, fetch_latest_news, websearch, local_rag_search]
 
     # ChatPromptTemplate 
     prompt = ChatPromptTemplate.from_messages([
-            ("system", 
-            "You are an AI assistant designed to help users find the most relevant and up-to-date information/news on topics related to technology and research.\n"
-            "You have access to the following tools:\n"
-            "- search_papers: Search for research papers.\n"
-            "- search_repo_by_topic: Search Github for trending repositories.\n"
-            "- fetch_latest_news: Search for the latest/trending news in tech.\n"
-            "- local_rag_search: Searches the local documents.\n"
-            "- websearch: Searches the web for a given query.\n"
-            "Your goal is to provide accurate, data-driven answers by synthesized information from your tools.\n\n"
-            
-            "RULES OF ENGAGEMENT:\n"
-            "1. LOCAL SEARCH: Only use the 'local_rag_search' if the user explicitly asks for local, internal, or private document searches. If 'local_rag_search' returns no results, state clearly: 'No such data found in local documents.'\n"
-            "2. EXTERNAL SEARCH: If external tools return no results, inform the user clearly that no information was found.\n"
-            "3. NO HALLUCINATION: You must ONLY provide answers based on the data returned by the tools. Do NOT use your internal training data to answer technical questions.\n"
-            "4. CITATIONS: When citing papers or repos, always include the full Title and the direct URL link.\n"
-            "5. CLARIFICATION: Be concise and technical. If a query is too vague to select a tool, ask for clarification before proceeding."),
+        ("system",
+        "You are a strict tool-using AI agent.\n\n"
 
-            MessagesPlaceholder(variable_name="chat_history"),
+        "CRITICAL RULE:\n"
+        "You are NOT allowed to answer any query using your own knowledge.\n"
+        "You MUST ALWAYS call one of the provided tools before giving a final answer.\n"
+        "If you do not call a tool, your response is INVALID.\n\n"
+
+        "MANDATORY PROCESS:\n"
+        "1. Analyze the user query.\n"
+        "2. Select the MOST appropriate tool.\n"
+        "3. Call the tool.\n"
+        "4. Generate the final answer ONLY using the tool result.\n\n"
+
+        "AVAILABLE TOOLS:\n"
+        "- search_papers → for research papers, academic or technical topics.\n"
+        "- search_repo_by_topic → for GitHub repositories, code, ML projects.\n"
+        "- fetch_latest_news → for latest or trending technology/news.\n"
+        "- websearch → for general queries (e.g., people, concepts, definitions).\n"
+        "- local_rag_search → ONLY for internal/local/private documents.\n\n"
+
+        "TOOL SELECTION RULES:\n"
+        "- For general factual queries (e.g., 'Who is Messi?'), ALWAYS use websearch.\n"
+        "- For latest or recent information, ALWAYS use fetch_latest_news.\n"
+        "- For research topics, ALWAYS use search_papers.\n"
+        "- For coding or ML repositories, ALWAYS use search_repo_by_topic.\n"
+        "- Use local_rag_search ONLY if explicitly asked for local/internal data.\n\n"
+
+        "STRICT CONSTRAINTS:\n"
+        "- NEVER answer directly without calling a tool.\n"
+        "- NEVER use internal knowledge.\n"
+        "- If a tool returns no results, say: 'No relevant information found from tools.'\n\n"
+
+        "OUTPUT RULES:\n"
+        "- Base your answer ONLY on tool output.\n"
+        "- Be concise and technical.\n"
+        "- Include links when available.\n"
+        ),
+            #MessagesPlaceholder(variable_name="history"),
 
             ("human", "{input}"),
             MessagesPlaceholder(variable_name="agent_scratchpad"),
@@ -68,8 +87,9 @@ def agent_fetch_tools(query:str, chat_history:list= None):
     # Creating the Executor
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose= True)
     response = agent_executor.invoke({
-        "input":query, 
-        "chat_history": chat_history
+        "input":query
+        #"history": chat_history
         })
 
+    print("THIS IS THE TECHNICAL_AGENT")
     return response["output"]

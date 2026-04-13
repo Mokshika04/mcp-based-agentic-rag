@@ -17,6 +17,10 @@ vector_store = QdrantVectorStore.from_existing_collection(
 
 @tool
 def local_rag_search(query: str):
+    """
+    Searches the local vector database for technical documentation 
+    and context regarding the project.
+    """
     results = vector_store.similarity_search(query, k=3)
 
     return "\n".join([doc.page_content for doc in results])

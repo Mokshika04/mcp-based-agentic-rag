@@ -36,6 +36,7 @@ def fetch_latest_news(query:str, limit:int=3):
             "source": article.get("source")
         })
 
+    print("News from the world")
     return results
 
 

@@ -42,6 +42,8 @@ def websearch(query:str):
         "summary": summary,
         "sources": sources,
     }
+
+    print("News from the web")
     return clean_output
 
 

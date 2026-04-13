@@ -47,5 +47,6 @@ def search_papers(query: str):
             "link": result.entry_id,
             "published": result.published
         })
-
+        
+    print("ArXiv Tool results")   
     return papers 
