@@ -7,19 +7,17 @@ This project implements a simple tool-augmented conversational agent using:
 - `fastmcp` for building an MCP tool server
 - `langchain` agents with Ollama LLM (`llama3.2:latest`) on the client side
 - Local RAG search over documents via a vector store + similarity search
-- Specialty connectors for arXiv, GitHub and news data
+- Specialty connectors for arXiv, GitHub, news data, and web search
 
 Primary modules:
 
 - `server.py`: MCP server exposes tools:
-  - `search_papers` (from `tools/arxiv_tool.py`)
-  - `search_repo_by_topic` (from `tools/github_tool.py`)
-  - `fetch_latest_news` (from `tools/newsdata_tool.py`)
-  - `search_local_documents` (from `local_rag_pipeline/vector_search.py`)
+  - `agent_fetch_tools` (from `worker_agents/technical_agent.py`): Multi-tool orchestrator for research and search tools.
+  - `conversational_agent` (from `worker_agents/general_agent.py`): General-purpose conversational handler.
 
-- `client.py`: interactive agent loop; uses LangChain `create_tool_calling_agent` + `ChatOllama`.
-- `local_rag_pipeline/vector_search.py`: local document embedding + retrieval API.
-- `local_rag_pipeline/vector_store.py`: store / index helper for local RAG data.
+- `client.py`: Interactive agent loop; uses LangChain `create_tool_calling_agent` + `ChatOllama`. **Includes a main orchestrator that dynamically selects which agent to call (e.g., `agent_fetch_tools` or `conversational_agent`) based on the user's query.**
+- `local_rag_pipeline/vector_search.py`: Local document embedding + retrieval API.
+- `local_rag_pipeline/vector_store.py`: Store / index helper for local RAG data.
 
 ## Features
 
@@ -57,10 +55,8 @@ uv run client.py
 
 3. Type queries. Tools are:
 
-- `research_tool` → arXiv search
-- `github_tool` → repository search by topic
-- `news_tool` → latest news search
-- `rag_tool` → local documents search
+- `agent_fetch_tools` → Multi-tool orchestrator for research and search tools.
+- `conversational_agent` → General-purpose conversational handler.
 
 Type `exit`, `bye`, `quit` to quit.
 
@@ -80,9 +76,12 @@ Type `exit`, `bye`, `quit` to quit.
 
 - `client.py` - User-facing async agent loop
 - `server.py` - MCP tool server
+- `worker_agents/technical_agent.py` - Multi-tool orchestrator
+- `worker_agents/general_agent.py` - General-purpose conversational handler
 - `tools/arxiv_tool.py` - arXiv search wrapper
 - `tools/github_tool.py` - GitHub search wrapper
 - `tools/newsdata_tool.py` - News search wrapper
+- `tools/web_search_tool.py` - Web search wrapper
 - `local_rag_pipeline/vector_search.py` - RAG query logic
 - `local_rag_pipeline/vector_store.py` - Persistence and indexes
 
