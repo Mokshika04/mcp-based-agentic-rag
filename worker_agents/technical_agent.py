@@ -26,8 +26,8 @@ def agent_fetch_tools(query:str, chat_history:list= None):
         str: Returns the string output.
     """
 
-    #if chat_history is None:
-       # chat_history = []
+    if chat_history is None:
+       chat_history = []
 
     tools = [search_papers, search_repo_by_topic, fetch_latest_news, websearch, local_rag_search]
 
@@ -55,7 +55,7 @@ def agent_fetch_tools(query:str, chat_history:list= None):
         "- local_rag_search → ONLY for internal/local/private documents.\n\n"
 
         "TOOL SELECTION RULES:\n"
-        "- For general factual queries (e.g., 'Who is Messi?'), ALWAYS use websearch.\n"
+        "- For general factual queries (e.g., 'Who is Messi?'), queries related to trending topics and discussions(twitter/reddit)(e.g., 'What's trending?'), ALWAYS use websearch.\n"
         "- For latest or recent information, ALWAYS use fetch_latest_news.\n"
         "- For research topics, ALWAYS use search_papers.\n"
         "- For coding or ML repositories, ALWAYS use search_repo_by_topic.\n"
@@ -71,7 +71,7 @@ def agent_fetch_tools(query:str, chat_history:list= None):
         "- Be concise and technical.\n"
         "- Include links when available.\n"
         ),
-            #MessagesPlaceholder(variable_name="history"),
+            MessagesPlaceholder(variable_name="history"),
 
             ("human", "{input}"),
             MessagesPlaceholder(variable_name="agent_scratchpad"),
@@ -87,9 +87,9 @@ def agent_fetch_tools(query:str, chat_history:list= None):
     # Creating the Executor
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose= True)
     response = agent_executor.invoke({
-        "input":query
-        #"history": chat_history
+        "input": query,
+        "history": chat_history
         })
 
-    print("THIS IS THE TECHNICAL_AGENT")
+    print("THIS IS THE TECHNICAL AGENT")
     return response["output"]

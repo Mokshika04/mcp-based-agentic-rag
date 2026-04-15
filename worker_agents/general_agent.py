@@ -26,10 +26,10 @@ def conversational_agent(query: str):
     """)
 
     # Getting the history from memory
-    #history = memory.load_memory_variables({})["history"]
+    history = memory.load_memory_variables({})["history"]
 
     # Constructing messages
-    messages = [system_msg] + [HumanMessage(content=query)]
+    messages = [system_msg] + history + [HumanMessage(content=query)]
     
     # Invoking model
     response = llm.invoke(messages)
