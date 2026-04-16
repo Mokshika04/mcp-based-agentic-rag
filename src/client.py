@@ -4,7 +4,6 @@ from langchain_classic.agents import AgentExecutor, create_tool_calling_agent
 from langchain.tools import tool
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from src.shared_resources import llm, memory
-from typing import Any
 
 # MCP Client Connection
 client = Client("http://127.0.0.1:8000/sse")
@@ -123,7 +122,7 @@ agent = create_tool_calling_agent(
     )
 
 # Creating the Executor
-agent_executor = AgentExecutor(agent=agent, tools=tools, verbose= False)
+agent_executor = AgentExecutor(agent=agent, tools=tools, verbose= False, memory=memory)
 
 async def main():
     while True:
