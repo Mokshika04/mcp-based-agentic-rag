@@ -3,7 +3,7 @@ from fastmcp import Client
 from langchain_classic.agents import AgentExecutor, create_tool_calling_agent
 from langchain.tools import tool
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from shared_resources import llm, memory
+from src.shared_resources import llm, memory
 from typing import Any
 
 # MCP Client Connection

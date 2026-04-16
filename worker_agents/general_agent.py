@@ -1,5 +1,5 @@
 from langchain.messages import SystemMessage, HumanMessage
-from shared_resources import llm, memory 
+from src.shared_resources import llm, memory 
 
 def conversational_agent(query: str):
     """

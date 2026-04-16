@@ -1,6 +1,6 @@
 import streamlit as st
 import asyncio
-from client import agent_executor, client  # Importing from your file
+from src.client import agent_executor, client  # Importing from your file
 
 # --- Page Config ---
 st.set_page_config(page_title="InsightAI", page_icon="✨")

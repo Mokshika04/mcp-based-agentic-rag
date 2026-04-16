@@ -5,7 +5,7 @@ from tools.web_search_tool import websearch
 from local_rag_pipeline. vector_search import local_rag_search
 from langchain_classic.agents import AgentExecutor, create_tool_calling_agent
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from shared_resources import llm
+from src.shared_resources import llm
 
 def agent_fetch_tools(query:str, chat_history:list= None):
     """
