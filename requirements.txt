@@ -11,5 +11,5 @@ qdrant-client
 transformers
 tiktoken 
 tavily-python
-
+streamlit
 
