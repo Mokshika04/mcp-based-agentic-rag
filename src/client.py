@@ -107,7 +107,7 @@ prompt = ChatPromptTemplate.from_messages([
     "- Call ONLY ONE agent per query.\n"
     ),
 
-    #MessagesPlaceholder(variable_name="history"),
+    MessagesPlaceholder(variable_name="history"),
 
     ("human", "{input}"),
 
